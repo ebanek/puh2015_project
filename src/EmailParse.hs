@@ -1,3 +1,8 @@
+module EmailParse (
+    Three,
+    extract
+) where 
+
 import Text.Parsec (ParseError, parse)
 import Text.Parsec.Char (char, letter, satisfy, anyChar, string)
 import Text.ParserCombinators.Parsec (Parser, try, noneOf, many1
@@ -22,7 +27,7 @@ parseWithMap map = do
 
 ifAndParse :: String -> Map String Three -> Parser String
 ifAndParse expr map = do
-    let b = isBooleanExpr args map
+    let b = isBooleanExpr expr map
     s <- parseWithMap map
     if b then 
         (s ++) <$> parseWithMap map
