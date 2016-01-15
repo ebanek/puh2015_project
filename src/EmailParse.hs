@@ -1,6 +1,7 @@
 module EmailParse (
-    Three,
-    extract
+    Three (..),
+    extract,
+    regularParse
 ) where 
 
 import Text.Parsec (ParseError, parse)
