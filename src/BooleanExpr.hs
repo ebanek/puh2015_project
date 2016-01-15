@@ -1,5 +1,9 @@
-import EmailParse
+module BooleanExpr (
+    boolean
+) where
+
 import Data.Map
+import Utility (Three(..), regularParse)
 import Text.Parsec.Char (letter, char, string)
 import Text.ParserCombinators.Parsec (try, oneOf, Parser, many1, eof
                                      ,manyTill, lookAhead)
@@ -8,9 +12,9 @@ import Control.Monad (void)
 
 boolean :: Map String Three -> String -> Bool
 boolean map s = evalExpr parsedExpr
-    where either = regularParse (parseBoolExpr map) s
+    where either = regularParse (simpleExpr map) s
           parsedExpr = case either of
-              Left err   -> error (show err)
+              Left err   -> error (show err ++ "\nboolean")
               Right expr -> expr 
 
 

@@ -1,9 +1,8 @@
 module EmailParse (
-    Three (..),
-    extract,
-    regularParse
 ) where 
 
+import Utility
+import BooleanExpr (boolean)
 import Text.Parsec (ParseError, parse)
 import Text.Parsec.Char (char, letter, satisfy, anyChar, string)
 import Text.ParserCombinators.Parsec (Parser, try, noneOf, many1
@@ -11,9 +10,6 @@ import Text.ParserCombinators.Parsec (Parser, try, noneOf, many1
 import Control.Applicative (many, (<*>), (<|>), pure, (<$>), (*>))
 import Control.Monad (void)
 import Data.Map
-
-regularParse :: Parser a -> String -> Either ParseError a
-regularParse p = parse p ""
 
 parseWithMap :: Map String Three -> Parser String
 parseWithMap map = do
@@ -28,13 +24,12 @@ parseWithMap map = do
 
 ifAndParse :: String -> Map String Three -> Parser String
 ifAndParse expr map = do
-    let b = isBooleanExpr expr map
     s <- parseWithMap map
     if b then 
         (s ++) <$> parseWithMap map
     else 
         (parseWithMap map)
-
+    where b = boolean map expr
 
 fromMapAndParse :: String -> Map String Three -> Parser String
 fromMapAndParse args map = do
@@ -63,19 +58,15 @@ readText = do
     s <- manyTill anyChar $ (try $ lookAhead readToken)
     return s
 
-isBooleanExpr :: String -> Map String Three -> Bool
-isBooleanExpr args map = True
 
-data Three = Fst String | Snd Bool | Thd [String] deriving Show
 testMap = fromList[
                 ("someBool", Snd True), 
                 ("aList", Thd ["yolo", "dude"]),
                 ("mapped", Fst "You have accessed a mapped value."),
-                ("otherMapped", Fst "I am a snail.")] 
+                ("otherMapped", Fst "I am a snail."),
+                ("fTrue", Snd True), 
+                ("sTrue", Snd True), 
+                ("fFalse", Snd False)] 
 
-testString = "Well, @if{someBool} this @if{someBool} nested madafaka @endif{} is my @m{maped} first parser.@endif{} @m{mapped}. Makes you wonder @m{otherMapped}. Makes you wonder. @end{}"
+testString = "Well, fdsjibalfdiblsadblf @if{someBool and (not fFalse)} this @if{someBool} nested madafaka @endif{} is my @m{mapped} first parser.@endif{} @m{mapped}. Makes you wonder @m{otherMapped}. Makes you wonder. @end{}"
 
-extract :: Three -> String
-extract (Fst s)  = s
-extract (Snd b)  = show b
-extract (Thd xs) = show xs
