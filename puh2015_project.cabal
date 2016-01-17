@@ -7,7 +7,7 @@ synopsis:            Simple ferko-like modules.
 -- description:         
 homepage:            https://github.com/ebanek/puh2015_project
 -- license:             
-license-file:        LICENSE
+license-file:        MIT
 author:              Erik Banek
 maintainer:          erik.banek@gmail.com
 -- copyright:           
@@ -18,4 +18,4 @@ cabal-version:       >=1.8
 library
   -- exposed-modules:     
   -- other-modules:       
-  build-depends:       base ==4.6.*, json == 0.8.*, smtp-mail == 0.1.4.*, parsec >= 3.1.3, aeson == 0.7.*, text == 0.11.*, bytestring == 0.10.0.2, containers == 0.5.*, mtl == 2.*
+  build-depends:       base ==4.6.*, json == 0.8.*, smtp-mail == 0.1.4.*, parsec >= 3.1.3, aeson == 0.7.*, text == 0.11.*, bytestring == 0.10.0.2, containers == 0.5.*, mime-mail == 0.4.*, network >= 2.4, persistent == 2.2.*, persistent-sqlite == 2.2.*, mtl == 2.1.*, persistent-template == 2.1.*, transformers == 0.3.*, conduit == 1.2.*

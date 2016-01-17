@@ -4,8 +4,8 @@ module Utility (
     Three (..),
     extract,
     regularParse,
-    Configuration,
-    readJSONConf
+    Configuration (..),
+    readJSONConf,
 ) where
 
 import Text.ParserCombinators.Parsec (Parser)
@@ -30,26 +30,28 @@ data Three = Fst String
             | Thd [String] deriving (Show, Eq)
 
 data Configuration = Configuration {
-    host :: Int,
+    host :: Text,
     port :: Int,
+    subject :: Maybe Text,
     senderEmail :: Text,
-    username :: Text,
-    password :: Text 
+    username :: Maybe Text,
+    password :: Maybe Text 
 } deriving (Show, Eq)
 
 
 instance FromJSON Configuration where
     parseJSON (Object v) =
-        Configuration <$> v .: (pack "host")
-                      <*> v .: (pack "port")
+        Configuration <$> v .:  (pack "host")
+                      <*> v .:? (pack "port") .!= 25
+                      <*> v .:? (pack "subject") .!= Nothing
                       <*> v .: (pack "senderEmail")
-                      <*> v .: (pack "username")
-                      <*> v .: (pack "password")
+                      <*> v .:? (pack "username") .!= Nothing
+                      <*> v .:? (pack "password") .!= Nothing
     parseJSON _ = mzero
 
 sampleConf :: IO (Maybe Configuration)
 sampleConf = do
-    jsonFile <- ByteStr.readFile "sample.conf"
+    jsonFile <- ByteStr.readFile "sample.json"
     let conf = decode jsonFile :: Maybe Configuration
     return conf
 
